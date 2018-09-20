@@ -1,61 +1,59 @@
 package training.supportbank;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
+//import java.text.SimpleDateFormat;
+//import java.util.Date;
+import java.util.HashSet;
 
 public class Record {
-	private Date date;
+//	private Date date;
+	private String date;
 	private Person from;
 	private Person to;
 	private String narrative;
 	private Float amount;
 	
-	public Record(String[] sLine) throws ParseException {
-		this.date = new SimpleDateFormat("dd/MM/yyyy").parse(sLine[0]);
-		
-		//add from and to to this.people list, if they're not already in the list
-		this.people = people;
-		addPerson(sLine, 1);
-		addPerson(sLine, 2);
+	public Record(String[] sLine, HashSet<Person> people) throws ParseException {
+//		this.date = new SimpleDateFormat("dd/MM/yyyy").parse(sLine[0]);	
+		this.date = sLine[0];
 		
 		//set from and to as the people in people list
-		this.from = getPerson(sLine[1]);
-		this.to = getPerson(sLine[2]);
+		this.from = getPerson(sLine[1], people);
+		this.to = getPerson(sLine[2], people);
 		
 		this.narrative = sLine[3];
 		this.amount = Float.parseFloat(sLine[4]);
-		
-		//add this record to the person who sent the money
-		this.from.addRecord(this);
 	}
 	
-	public LinkedList<Person> getPeople() {
-		return this.people;
+	public Person getFrom() {
+		return this.from;
 	}
 	
-	public float getAmountSpent() {
-		this.to.receiveAmount(this.amount);
+	public Person getTo() {
+		return this.to;
+	}
+	
+	public Float getAmount() {
 		return this.amount;
+	}
+	
+	public String negateString() {
+		return this.date + " " + narrative + " -" + String.format("%.2f", this.amount);
 	}
 	
 	@Override
 	public String toString() {
-		return "    " + narrative;
+		return this.date + " " + narrative + " " + String.format("%.2f", this.amount);
 	}
 	
-	private void addPerson(String[] sLine, Integer index) {
-		Person curPerson = new Person(sLine[index]);
-		if (!this.people.contains(curPerson)) {
-			this.people.add(curPerson);
-		} else {
-			curPerson = this.people.get(this.people.indexOf(curPerson));
-		}
-	}
-	
-	private Person getPerson(String name) {
+	private Person getPerson(String name, HashSet<Person> people) {
 		Person curPerson = new Person(name);
-		return people.get(people.indexOf(curPerson));
+		for (Person p : people) {
+			if (p.equals(curPerson)) {
+				return p;
+			}
+		}
+		//should never be hit, as there will always be a person in people for all transactions
+		return new Person("ERROR");
 	}
 }
