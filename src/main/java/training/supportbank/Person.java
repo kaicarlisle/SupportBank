@@ -48,7 +48,7 @@ public class Person implements Comparable<Person> {
 	
 	@Override 
 	public String toString() {
-		return String.format("%1$-7s %2$-1s £%3$.2f", this.name, ":", this.balance);
+		return String.format("%1$-9s %2$-1s £%3$.2f", this.name, ":", this.balance);
 	}
 	
 	@Override
