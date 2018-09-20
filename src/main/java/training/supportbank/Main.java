@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -18,14 +17,13 @@ public class Main {
 	private static final Logger LOGGER = LogManager.getLogger();
 	
     public static void main(String args[]){
-		File file = new File("Transactions2014.csv");
-//    	File file = new File("test.csv");
+//		File file = new File("Transactions2014.csv");
+    	File file = new File("test.csv");
 		BufferedReader reader;
 		String delimiter = ",|\\$|\\^";
 		
 		HashSet<Person> people = new HashSet<Person>();
 		LinkedList<Record> records = new LinkedList<Record>();
-		Float alreadyOwes;
 		String line;
 		String sLine[];
 		
@@ -46,21 +44,12 @@ public class Main {
 				//add each record to the person who owes money
 				r.getFrom().addRecord(r);
 				
-				//update the sender individual owes amounts
-				if (r.getFrom().getIndividualOwes().containsKey(r.getTo())) {
-					alreadyOwes = r.getFrom().getIndividualOwes().get(r.getTo());
-				} else {
-					alreadyOwes = 0%.2f;
-				}
-				alreadyOwes -= r.getAmount();
-				r.getFrom().setIndividualOwes(r.getTo(), alreadyOwes);
-				
 				//remove the sent amount from the sender, and add it to the receiver
 				r.getFrom().deduct(r.getAmount());
 				r.getTo().receive(r.getAmount());
 			}
 			
-			display(people, "All");
+			display(people, "Jon A");
 			reader.close();
 		} catch (FileNotFoundException e) {
 			LOGGER.log(Level.FATAL, "No such file");
@@ -77,8 +66,7 @@ public class Main {
 	
 	private static LinkedList<Record> populateRecordList(String[] sLine, LinkedList<Record> records, HashSet<Person> people) {
 		try {
-			Record curRecord = new Record(sLine, people);
-			records.add(curRecord);
+			records.add(new Record(sLine, people));
 		} catch (ParseException e) {
 			LOGGER.log(Level.WARN, "Invalid record in file");
 		} 
@@ -86,18 +74,14 @@ public class Main {
 	}
 	
 	private static void display(HashSet<Person> people, String displayMode) {
-		HashMap<Person, Float> individualOwes;
 		if (displayMode.equals("All")) {
 			for (Person p : people) {
-				System.out.println(p + " : " + p.getBalance());
-				individualOwes = p.getIndividualOwes();
-				for (Person q : individualOwes.keySet()) {
-					System.out.println("    " + q + " : " + String.format("%.2f", individualOwes.get(q)));
-				}
+				System.out.println(p);
 			}
 		} else { //displayMode is someone's name
 			Boolean foundPerson = false;
 			Person curPerson = new Person(displayMode);
+			HashSet<Record> filteredRecords;
 			for (Person q : people) {
 				if (q.equals(curPerson)) {
 					foundPerson = true;
@@ -106,21 +90,24 @@ public class Main {
 				}
 			}
 			if (foundPerson) {
-				System.out.println(curPerson + " : " + String.format("%.2f", curPerson.getBalance()));
-				
-				individualOwes = curPerson.getIndividualOwes();
-				for (Person p : individualOwes.keySet()) {
-					System.out.println("    " + p + " : " + String.format("%.2f", individualOwes.get(p)));
-					//People who owe curPerson
-					for (Record r : p.getRecords()) {
-						if (r.getTo().equals(curPerson)) {
-							System.out.println("        " + r);
+				System.out.println(curPerson);				
+				for (Person p : people) {
+					filteredRecords = new HashSet<Record>();
+					for (Record r : curPerson.getRecords()) {
+						if ((r.getFrom().equals(curPerson) && r.getTo().equals(p))) {
+							filteredRecords.add(r);
 						}
 					}
-					//people curPerson owes
-					for (Record r : curPerson.getRecords()) {
-						if (r.getTo().equals(p)) {
-							System.out.println("        " + r.negateString());
+					for (Record r : p.getRecords()) {
+						if ((r.getFrom().equals(p) && r.getTo().equals(curPerson))) {
+							filteredRecords.add(r.negate(people));
+						}
+					}
+					if (filteredRecords.size() > 0) {
+						Float amountCurPersonOwesP = curPerson.getAmountThisOwesA(p) - p.getAmountThisOwesA(curPerson);
+						System.out.println(String.format("    %1$-7s %2$-1s £%3$.2f", p.getName(), ":", amountCurPersonOwesP));
+						for (Record r : filteredRecords) {
+							System.out.println("        " + r);
 						}
 					}
 				}

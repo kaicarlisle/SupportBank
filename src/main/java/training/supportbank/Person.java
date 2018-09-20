@@ -1,20 +1,16 @@
 package training.supportbank;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Person implements Comparable<Person> {
 	private String name;
 	private Float balance;
 	private LinkedList<Record> records;
-	//maps how much this person owes to each other person
-	private HashMap<Person, Float> individualOwes;
 		
 	public Person(String name) {
 		this.name = name;
 		this.balance = 0%.2f;
 		this.records = new LinkedList<Record>();
-		this.individualOwes = new HashMap<Person, Float>();
 	}
 	
 	public LinkedList<Record> getRecords() {
@@ -26,28 +22,33 @@ public class Person implements Comparable<Person> {
 	}
 	
 	public void deduct(Float amount) {
-		this.balance -= amount;
-	}
-	
-	public void receive(Float amount) {
 		this.balance += amount;
 	}
 	
-	public Float getBalance() {
-		return this.balance;
+	public void receive(Float amount) {
+		this.balance -= amount;
 	}
 	
-	public HashMap<Person, Float> getIndividualOwes() {
-		return this.individualOwes;
+	public Float getAmountThisOwesA(Person A) {
+		Float total = 0%.2f;
+		for (Record r : this.records) {
+			if (r.getTo().equals(A)) {
+				total += r.getAmount();
+			}
+			if (r.getFrom().equals(A)) {
+				total -= r.getAmount();
+			}
+		}
+		return total;
 	}
 	
-	public void setIndividualOwes(Person p, Float amount) {
-		this.individualOwes.put(p, amount);
+	public String getName() {
+		return this.name;
 	}
 	
 	@Override 
 	public String toString() {
-		return (this.name);
+		return String.format("%1$-7s %2$-1s £%3$.2f", this.name, ":", this.balance);
 	}
 	
 	@Override

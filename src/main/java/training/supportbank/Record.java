@@ -22,7 +22,15 @@ public class Record {
 		this.to = getPerson(sLine[2], people);
 		
 		this.narrative = sLine[3];
-		this.amount = Float.parseFloat(sLine[4]);
+		this.amount = 0 - Float.parseFloat(sLine[4]);
+	}
+	
+	public Record(String date, String from, String to, String narrative, String amount, HashSet<Person> people) {
+		this.date = date;
+		this.from = getPerson(from, people);
+		this.to = getPerson(to, people);
+		this.narrative = narrative;
+		this.amount = Float.parseFloat(amount);
 	}
 	
 	public Person getFrom() {
@@ -37,13 +45,14 @@ public class Record {
 		return this.amount;
 	}
 	
-	public String negateString() {
-		return this.date + " " + narrative + " -" + String.format("%.2f", this.amount);
+	public Record negate(HashSet<Person> people) {
+		String nAmount = String.valueOf(0 - this.amount);
+		return new Record(this.date, this.from.getName(), this.to.getName(), this.narrative, nAmount, people);
 	}
 	
 	@Override
 	public String toString() {
-		return this.date + " " + narrative + " " + String.format("%.2f", this.amount);
+		return String.format("%1$-13s %2$-20s £%3$.2f", this.date, this.narrative, this.amount);
 	}
 	
 	private Person getPerson(String name, HashSet<Person> people) {
