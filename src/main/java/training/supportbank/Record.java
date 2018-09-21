@@ -10,7 +10,7 @@ public class Record {
 	private Float amount;
 	
 	public Record(String[] sLine, HashSet<Person> people) throws BadDateException, NumberFormatException {
-		this.date = new MyDate(sLine[0]);
+		this.date = new MyDate(sLine[0], "/");
 		
 		//set from and to as the people in people list
 		this.from = getPerson(sLine[1], people);
@@ -21,7 +21,7 @@ public class Record {
 	}
 	
 	public Record(String date, String from, String to, String narrative, String amount, HashSet<Person> people) throws NumberFormatException, BadDateException {
-		this.date = new MyDate(date);
+		this.date = new MyDate(date, "/");
 		this.from = getPerson(from, people);
 		this.to = getPerson(to, people);
 		this.narrative = narrative;

@@ -5,10 +5,10 @@ public class MyDate {
 	private String month;
 	private String year;
 	
-	public MyDate(String date) throws BadDateException {
+	public MyDate(String date, String delimiter) throws BadDateException {
 		String[] fields;
 		try {
-			fields = date.split("/");
+			fields = date.split(delimiter);
 			this.day = String.format("%02d", Integer.parseInt(fields[0]));
 			this.month = String.format("%02d", Integer.parseInt(fields[1]));
 			this.year = String.format("%04d", Integer.parseInt(fields[2]));

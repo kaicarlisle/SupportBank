@@ -1,5 +1,6 @@
 package training.supportbank;
 
+@SuppressWarnings("serial")
 public class BadDateException extends Exception {
 	public String badDate;
 	
