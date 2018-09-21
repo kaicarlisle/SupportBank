@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
@@ -32,13 +33,19 @@ public class JSONParser extends FileParser {
 	}
 	
 	@Override
-	public LinkedList<Record> parseRecords() throws IOException, NumberFormatException, BadDateException {
+	public LinkedList<Record> parseRecords() throws IOException {
 		while ((this.line = this.reader.readLine()) != null) {
 			this.jsonString += this.line;
 		}
 		Response[] responses = gson.fromJson(jsonString, Response[].class);
 		for (Response r : responses) {
-			this.records.add(new Record(r.getDate(), r.getFrom(), r.getTo(), r.getNarrative(), r.getAmount(), this.people));
+			try {
+				this.records.add(new Record(r.getDate(), r.getFrom(), r.getTo(), r.getNarrative(), r.getAmount(), this.people));
+			} catch (BadDateException e) {
+				LOGGER.log(Level.WARN, "Bad date format in json: " + r);
+			} catch (NumberFormatException e) {
+				LOGGER.log(Level.WARN, "Bad amount format in json: " + r);
+			}
 		}
 		
 		return this.records;

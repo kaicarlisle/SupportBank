@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 public class CSVParser extends FileParser {
@@ -24,14 +25,20 @@ public class CSVParser extends FileParser {
 		this.reader = new BufferedReader(new FileReader(file));
 	}
 
-	public LinkedList<Record> parseRecords() throws IOException, NumberFormatException, BadDateException {
+	public LinkedList<Record> parseRecords() throws IOException {
 		//skip past header line of csv
 		this.line = this.reader.readLine();
 		
 		//populate record list
 		while ((this.line = this.reader.readLine()) != null) {
 			this.sLine = this.line.split(this.csvDelimiter);
-			this.records.add(new Record(sLine, people));
+			try {
+				this.records.add(new Record(sLine, people));
+			} catch (BadDateException e) {
+				LOGGER.log(Level.WARN, "Bad date format in csv: " + this.line);
+			} catch (NumberFormatException e) {
+				LOGGER.log(Level.WARN, "Bad amount format in csv: " + this.line);
+			}
 		}
 		return this.records;
 	}

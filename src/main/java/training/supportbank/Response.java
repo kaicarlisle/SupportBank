@@ -2,8 +2,8 @@ package training.supportbank;
 
 public class Response {
 	private String date;
-	private String from;
-	private String to;
+	private String fromAccount;
+	private String toAccount;
 	private String narrative;
 	private Float amount;
 	
@@ -12,11 +12,11 @@ public class Response {
 	}
 	
 	public String getFrom() {
-		return this.from;
+		return this.fromAccount;
 	}
 	
 	public String getTo() {
-		return this.to;
+		return this.toAccount;
 	}
 	
 	public String getNarrative() {
@@ -29,6 +29,6 @@ public class Response {
 	
 	@Override
 	public String toString() {
-		return this.narrative;
+		return this.date + this.fromAccount + this.toAccount + this.narrative + this.amount;
 	}
 }

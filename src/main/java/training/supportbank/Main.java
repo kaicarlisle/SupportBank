@@ -19,10 +19,9 @@ public class Main {
 	
     public static void main(String args[]){
 		LinkedList<File> files = new LinkedList<File>();
-//		files.add(new File("Transactions2014.csv"));
-//		files.add(new File("DodgyTransactions2015.csv"));
-//		files.add(new File("Transactions2013.json"));
-		files.add(new File("test.json"));
+		files.add(new File("Transactions2014.csv"));
+		files.add(new File("DodgyTransactions2015.csv"));
+		files.add(new File("Transactions2013.json"));
 		
 		HashSet<Person> people = new HashSet<Person>();
 		LinkedList<Record> records = new LinkedList<Record>();
@@ -52,11 +51,7 @@ public class Main {
 			} catch (FileNotFoundException e) {
 				LOGGER.log(Level.FATAL, "No such file " + file.getName());
 			} catch (IOException e) {
-				LOGGER.log(Level.FATAL, "Failed to parse record");
-			} catch (NumberFormatException e) {
-				LOGGER.log(Level.FATAL, "number format exception");
-			} catch (BadDateException e) {
-				LOGGER.log(Level.FATAL, "Bad date format");
+				LOGGER.log(Level.FATAL, "Failed to parse file " + file.getName());
 			}
 		}
 		

@@ -24,7 +24,7 @@ public abstract class FileParser {
 		this.records = new LinkedList<Record>();
 	}
 	
-	public abstract LinkedList<Record> parseRecords() throws IOException, NumberFormatException, BadDateException;
+	public abstract LinkedList<Record> parseRecords() throws IOException;
 	
 	public abstract HashSet<Person> parsePeople() throws IOException;
 	
