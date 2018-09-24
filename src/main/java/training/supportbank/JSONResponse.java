@@ -1,6 +1,6 @@
 package training.supportbank;
 
-public class Response {
+public class JSONResponse {
 	private String date;
 	private String fromAccount;
 	private String toAccount;

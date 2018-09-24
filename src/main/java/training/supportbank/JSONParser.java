@@ -37,8 +37,8 @@ public class JSONParser extends FileParser {
 		while ((this.line = this.reader.readLine()) != null) {
 			this.jsonString += this.line;
 		}
-		Response[] responses = gson.fromJson(jsonString, Response[].class);
-		for (Response r : responses) {
+		JSONResponse[] responses = gson.fromJson(jsonString, JSONResponse[].class);
+		for (JSONResponse r : responses) {
 			try {
 				this.records.add(new Record(r.getDate(), r.getFrom(), r.getTo(), r.getNarrative(), r.getAmount(), this.people));
 			} catch (BadDateException e) {
@@ -56,8 +56,8 @@ public class JSONParser extends FileParser {
 		while ((this.line = this.reader.readLine()) != null) {
 			this.jsonString += this.line;
 		}
-		Response[] responses = gson.fromJson(jsonString, Response[].class);
-		for (Response r : responses) {
+		JSONResponse[] responses = gson.fromJson(jsonString, JSONResponse[].class);
+		for (JSONResponse r : responses) {
 			this.people.add(new Person(r.getFrom()));
 			this.people.add(new Person(r.getTo()));
 		}

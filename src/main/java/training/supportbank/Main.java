@@ -19,9 +19,11 @@ public class Main {
 	
     public static void main(String args[]){
 		LinkedList<File> files = new LinkedList<File>();
-		files.add(new File("Transactions2014.csv"));
-		files.add(new File("DodgyTransactions2015.csv"));
-		files.add(new File("Transactions2013.json"));
+//		files.add(new File("DodgyTransactions2015.csv"));
+//		files.add(new File("Transactions2014.csv"));
+//		files.add(new File("Transactions2013.json"));
+//		files.add(new File("Transactions2012.xml"));
+		files.add(new File("test.xml"));
 		
 		HashSet<Person> people = new HashSet<Person>();
 		LinkedList<Record> records = new LinkedList<Record>();
@@ -38,6 +40,8 @@ public class Main {
 					parser = new CSVParser(people, reader, LOGGER, ",|\\$|\\^");
 				} else if (file.getName().endsWith(".json")) {
 					parser = new JSONParser(people, reader, LOGGER);
+				} else if (file.getName().endsWith(".xml")) {
+					parser = new XMLParser(people, reader, LOGGER, file);
 				}
 				
 				if (parser != null) {
@@ -52,6 +56,8 @@ public class Main {
 				LOGGER.log(Level.FATAL, "No such file " + file.getName());
 			} catch (IOException e) {
 				LOGGER.log(Level.FATAL, "Failed to parse file " + file.getName());
+			} catch (NullPointerException e) {
+				LOGGER.log(Level.WARN, "No records found in " + file.getName());
 			}
 		}
 		
